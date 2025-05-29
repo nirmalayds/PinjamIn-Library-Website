@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Admin Dashboard</title>
+  <link rel="stylesheet" href="style-admin.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script type="module" src="dashboard.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="logo">Library Admin</div>
+
+      <div class="user-info">
+        <span id="user-name"></span>
+        <button id="logout">Logout</button>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="books.html">Books Management</a></li>
+          <li><a href="add-admin.html">Admins Management</a></li>
+          <li><a href="users.html">Users Management</a></li>
+          <li><a href="circulation.html">Circulation</a></li>
+          <li><a href="reports.html">Reports</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="main-content">
+      <h1>Dashboard Overview</h1>
+
+      <div class="stats-container">
+        <div class="stat-card">
+          <h3>Total Books</h3>
+          <p id="total-books">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Borrowed Books</h3>
+          <p id="borrowed-books">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Registered Users</h3>
+          <p id="total-users">0</p>
+        </div>
+      </div>
+
+      <div class="recent-activity">
+        <h2>Recent Borrowings</h2>
+        <table id="recent-borrowings" class="table">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>User</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data akan diisi oleh JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</html>

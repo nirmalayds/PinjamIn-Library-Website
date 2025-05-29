@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Library Admin</title>
+    <link rel="stylesheet" href="style-admin.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="reports.js"></script>
+    <script type="module" src="dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .report-section {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .report-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .date-inputs {
+            margin: 15px 0;
+        }
+
+        .date-inputs label {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .status-message {
+            margin-left: 15px;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="logo">Library Admin</div>
+            <div class="user-info">
+                <span id="user-name"></span>
+                <button id="logout">Logout</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="books.html">Books Management</a></li>
+                    <li><a href="add-admin.html">Admins Management</a></li>
+                    <li><a href="users.html">Users Management</a></li>
+                    <li><a href="circulation.html">Circulation</a></li>
+                    <li><a class="active" href="reports.html">Reports</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <h1>Reports</h1>
+
+            <!-- Laporan Peminjaman -->
+            <div class="report-section">
+                <h2>Borrowed Reports</h2>
+                <div class="date-inputs">
+                    <label for="borrowing-from-date">Dari:</label>
+                    <input type="date" id="borrowing-from-date">
+
+                    <label for="borrowing-to-date">Sampai:</label>
+                    <input type="date" id="borrowing-to-date">
+                </div>
+                <button id="generate-borrowing-report">Buat Laporan Peminjaman</button>
+                <span id="borrowing-report-status" class="status-message"></span>
+            </div>
+
+            <!-- Laporan Pengembalian -->
+            <div class="report-section">
+                <h2>Returned Reports</h2>
+                <div class="date-inputs">
+                    <label for="return-from-date">Dari:</label>
+                    <input type="date" id="return-from-date">
+
+                    <label for="return-to-date">Sampai:</label>
+                    <input type="date" id="return-to-date">
+                </div>
+                <button id="generate-return-report">Buat Laporan Pengembalian</button>
+                <span id="return-report-status" class="status-message"></span>
+            </div>
+
+            <!-- Laporan Sirkulasi -->
+            <div class="report-section">
+                <h2>Circulation Reports</h2>
+                <div class="date-inputs">
+                    <label for="circulation-from-date">Dari:</label>
+                    <input type="date" id="circulation-from-date">
+
+                    <label for="circulation-to-date">Sampai:</label>
+                    <input type="date" id="circulation-to-date">
+                </div>
+                <button id="generate-circulation-report">Buat Laporan Sirkulasi</button>
+                <span id="circulation-report-status" class="status-message"></span>
+            </div>
+
+
+</body>
+</html>

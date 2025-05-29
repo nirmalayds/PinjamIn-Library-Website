@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Peminjaman Buku</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script type="module" src="/profil-user.js"></script>
+    <script type="module" src="/peminjaman.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: left;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .book-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .terms {
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            animation: modalopen 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {
+                opacity: 0;
+                transform: translateY(-50px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Style untuk tombol */
+        .cta-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            /* Hilangkan position fixed/absolute */
+        }
+
+        /* Style ketika tombol di catalog */
+        #catalog .cta-btn {
+            margin: 20px auto;
+            display: block;
+            width: fit-content;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span>PinjamIn</span>
+        </div>
+
+        <div class="search-bar">
+            <input id="search-bar-input" type="text" placeholder="Cari buku atau penulis...">
+            <button><i id="search-button" class="fas fa-search"></i></button>
+        </div>
+
+        <div class="nav-links">
+            <ul>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">Tentang</a></li>
+                <li><a href="#catalog">Katalog</a></li>
+                <li><a href="peminjaman.html">Peminjaman</a></li>
+                <li><a href="#contact">Kontak</a></li>
+
+            </ul>
+        </div>
+
+        <div class="user-actions">
+            <div id="user-profile" class="user-profile">
+                <div class="profile-dropdown">
+                    <div id="user-avatar" alt=" " class="avatar"></div>
+                    <span class="user-name">Pengguna</span>
+                    <div class="dropdown-content">
+                        <a href="peminjaman.html"><i class="fas fa-calendar-check"></i> Peminjaman Saya</a>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        <a href="#" id="delete-account-btn"><i class="fas fa-cog"></i> Hapus akun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="hamburger" class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Jelajahi Dunia Tanpa Batas</h1>
+            <p>Temukan koleksi buku dari berbagai genre di perpustakaan kami. Pinjam buku online, nikmati bacaan fisik
+                tanpa antri!</p>
+            <button id="pinjam-btn" class="cta-btn">Mulai Pinjam</button>
+        </div>
+        <div class="hero-image">
+            <img src="/books.jpg" alt="Buku Digital">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2>Tentang Kami</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Perpustakaan Digital kami didirikan pada tahun 2025 dengan misi menyediakan akses peminjaman yang
+                    mudah dan terjangkau untuk semua orang. Koleksi kami mencakup berbagai genre dari fiksi hingga
+                    akademik.</p>
+                <ul>
+                    <li><i class="fas fa-check"></i> 10+ koleksi buku</li>
+                    <li><i class="fas fa-check"></i> Akses 24/7</li>
+                    <li><i class="fas fa-check"></i> Platform ramah pengguna</li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <img src="/library2.jpg" alt="Tentang Perpustakaan">
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog" class="catalog">
+        <h2>Katalog Buku</h2>
+        <div class="book-grid" id="book-container">
+            <!-- Books will be loaded here dynamically -->
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-header">
+            <h2>Butuh Bantuan? Hubungi Kami</h2>
+            <p class="contact-subtitle">Tim perpustakaan digital kami siap membantu Anda!</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- WhatsApp -->
+            <div class="contact-method whatsapp">
+                <div class="contact-icon">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Chat Langsung</h3>
+                    <p>Respon cepat via WhatsApp 24/7</p>
+                    <a href="https://api.whatsapp.com/send?phone=6285860684374" class="contact-button">Mulai Chat</a>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="contact-method email">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Email Kami</h3>
+                    <p>Untuk pertanyaan lebih detail</p>
+                    <a href="mailto:info@digitallib.com" class="contact-email">info@digitallib.com</a>
+                </div>
+            </div>
+
+            <!-- Lokasi -->
+            <div class="contact-method location">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Kunjungi Kami</h3>
+                    <p>Jam operasional: Senin-Jumat, 08:00-16:00</p>
+                    <address>Jl. Perpustakaan No. 123<br>Surabaya, Jawa Timur</address>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-book-open"></i>
+                <span>DigitalLib</span>
+            </div>
+
+            <div class="footer-links">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">Tentang</a></li>
+                    <li><a href="#catalog">Katalog</a></li>
+                    <li><a href="#contact">Kontak</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-social">
+                <h4>Ikuti Kami</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 | Project Kelompok 6. Semua hak dilindungi.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Form Peminjaman -->
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="container">
+                <h1>Form Peminjaman Buku</h1>
+
+                <div class="book-info">
+                    <h3>Informasi Buku</h3>
+                    <p><strong>Judul:</strong> <span id="book-title">[Judul Buku]</span></p>
+                    <p><strong>Pengarang:</strong> <span id="book-author">[Nama Pengarang]</span></p>
+                    <p><strong>Kode Buku:</strong> <span id="book-code">[Kode Buku]</span></p>
+                </div>
+
+                <form id="loan-form">
+                    <div class="form-group">
+                        <label for="nama">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" required>
+                        <div class="invalid-feedback">Harap isi nama lengkap</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telepon">Nomor Telepon</label>
+                        <input type="tel" id="telepon" name="telepon" required pattern="[0-9]{10,13}">
+                        <div class="invalid-feedback">Nomor telepon harus 10-13 digit angka</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="invalid-feedback">Harap isi email yang valid</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tanggal-pinjam">Tanggal Peminjaman</label>
+                        <input type="date" id="tanggal-pinjam" name="tanggal-pinjam" required>
+                        <div class="invalid-feedback">Harap pilih tanggal peminjaman</div>
+                    </div>
+
+                    <div class="terms">
+                        <p><strong>Ketentuan Peminjaman:</strong></p>
+                        <ul>
+                            <li>Maksimal peminjaman 3 hari</li>
+                            <li>Denda keterlambatan Rp3.000/hari</li>
+                            <li>Buku yang hilang harus diganti dengan judul yang sama atau membayar 2x harga buku</li>
+                        </ul>
+                        <p>
+                            <input type="checkbox" id="agree" name="agree" required>
+                            <label for="agree">Saya menyetujui ketentuan peminjaman</label>
+                        <div class="invalid-feedback">Anda harus menyetujui ketentuan</div>
+                        </p>
+                    </div>
+                    <button type="submit" class="btn" id="submit-loan">
+                        <span id="submit-text">Ajukan Peminjaman</span>
+                        <span id="submit-spinner" class="spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            where,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import {
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6-XALxgW4MM9RE8okNsNwUEOipJJG00g",
+            authDomain: "perpustakaan-web.firebaseapp.com",
+            projectId: "perpustakaan-web",
+            storageBucket: "perpustakaan-web.appspot.com",
+            messagingSenderId: "39289548587",
+            appId: "1:39289548587:web:6022c2cb01db20a7479f6e"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Variabel global untuk data buku dan user
+        let currentBookData = {};
+        let currentUser = null;
+
+        // Cek status login user
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName || 'Pengguna'
+                };
+                // Update tampilan profil user
+                document.querySelector('.user-name').textContent = currentUser.displayName;
+            } else {
+                console.log("User belum login");
+                // Redirect ke halaman login jika belum login
+                window.location.href = "login-user.html";
+            }
+        });
+
+        // Fungsi untuk memuat buku
+        async function loadBooks() {
+            const bookContainer = document.getElementById('book-container');
+            bookContainer.innerHTML = '<div class="loading">Memuat buku...</div>';
+
+            try {
+                // Ambil buku yang tersedia (available > 0)
+                const q = query(
+                    collection(db, 'books'),
+                    where('available', '>', 0)
+                );
+
+                const querySnapshot = await getDocs(q);
+                bookContainer.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    bookContainer.innerHTML = '<div class="loading">Tidak ada buku tersedia saat ini.</div>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const book = doc.data();
+                    const bookCard = document.createElement('div');
+                    bookCard.className = 'book-card';
+                    bookCard.innerHTML = `
+                        <div class="book-cover">
+                            <img src="${book.coverUrl || 'https://via.placeholder.com/200x300?text=No+Cover'}" 
+                                 alt="${book.title || 'Buku Tanpa Judul'}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" title="${book.title || ''}">
+                                ${book.title || 'Judul Tidak Tersedia'}
+                            </h3>
+                            <p class="book-author">${book.author || 'Penulis Tidak Diketahui'}</p>
+                            <div class="book-meta">
+                                <span>ISBN: ${book.isbn || '-'}</span>
+                                <span class="book-available">Tersedia: ${book.available || 0}</span>
+                            </div>
+                            <div class="book-actions">
+                                <button class="pinjam-btn" onclick="openLoanModal('${book.title || ''}', '${book.author || ''}', '${book.isbn || ''}')">
+                                    <i class="fas fa-book"></i> Pinjam
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    bookContainer.appendChild(bookCard);
+                });
+            } catch (error) {
+                console.error("Error loading books:", error);
+                bookContainer.innerHTML = '<div class="loading">Gagal memuat buku. Silakan coba lagi.</div>';
+            }
+        }
+
+        // Fungsi untuk membuka modal peminjaman
+        window.openLoanModal = function (title, author, code) {
+            currentBookData = { title, author, code };
+
+            // Isi data buku ke form
+            document.getElementById('book-title').textContent = title;
+            document.getElementById('book-author').textContent = author;
+            document.getElementById('book-code').textContent = code;
+
+            // Set tanggal minimal hari ini
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal-pinjam').setAttribute('min', today);
+            document.getElementById('tanggal-pinjam').value = today;
+
+            // Tampilkan modal
+            document.getElementById('loanModal').style.display = 'block';
+        };
+
+        // Fungsi untuk menutup modal
+        window.closeModal = function () {
+            document.getElementById('loanModal').style.display = 'none';
+            document.getElementById('loan-form').reset();
+
+            // Reset validasi
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+            document.querySelectorAll('.invalid-feedback').forEach(el => {
+                el.style.display = 'none';
+            });
+        };
+
+        // Fungsi untuk menampilkan pesan error
+        function showError(input, message) {
+            const formGroup = input.parentElement;
+            const errorElement = formGroup.querySelector('.invalid-feedback');
+
+            input.classList.add('is-invalid');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Fungsi untuk menghapus error
+        function clearError(input) {
+            const formGroup = input.parentElement;
+            const errorElement = formGroup.querySelector('.invalid-feedback');
+
+            input.classList.remove('is-invalid');
+            errorElement.style.display = 'none';
+        }
+
+        // Fungsi untuk memformat tanggal ke DD/MM/YYYY
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Fungsi untuk menghitung tanggal pengembalian (3 hari setelah peminjaman)
+        function calculateReturnDate(loanDate) {
+            const date = new Date(loanDate);
+            date.setDate(date.getDate() + 3);
+            return formatDate(date);
+        }
+
+        // Handle form submission
+        document.getElementById('loan-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Ambil elemen tombol submit
+            const submitButton = document.getElementById('submit-loan');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+
+            // Validasi form
+            let isValid = true;
+
+            // Reset semua error
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+            document.querySelectorAll('.invalid-feedback').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Validasi field
+            const nama = document.getElementById('nama');
+            const telepon = document.getElementById('telepon');
+            const email = document.getElementById('email');
+            const tanggalPinjam = document.getElementById('tanggal-pinjam');
+            const agree = document.getElementById('agree');
+
+            if (!nama.value.trim()) {
+                showError(nama, 'Harap isi nama lengkap');
+                isValid = false;
+            }
+
+            if (!telepon.value.trim() || !/^[0-9]{10,13}$/.test(telepon.value)) {
+                showError(telepon, 'Nomor telepon harus 10-13 digit angka');
+                isValid = false;
+            }
+
+            if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                showError(email, 'Harap isi email yang valid');
+                isValid = false;
+            }
+
+            if (!tanggalPinjam.value) {
+                showError(tanggalPinjam, 'Harap pilih tanggal peminjaman');
+                isValid = false;
+            }
+
+            if (!agree.checked) {
+                showError(agree, 'Anda harus menyetujui ketentuan peminjaman');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            try {
+                // Tampilkan loading state
+                submitButton.disabled = true;
+                submitText.textContent = 'Mengajukan...';
+                submitSpinner.style.display = 'inline-block';
+
+                // Format tanggal
+                const formattedLoanDate = formatDate(tanggalPinjam.value);
+                const returnDate = calculateReturnDate(tanggalPinjam.value);
+
+                // Data peminjaman
+                const loanData = {
+                    book: {
+                        title: currentBookData.title,
+                        author: currentBookData.author,
+                        code: currentBookData.code
+                    },
+                    user: {
+                        name: nama.value.trim(),
+                        phone: telepon.value.trim(),
+                        email: email.value.trim(),
+                        uid: currentUser.uid
+                    },
+                    dates: {
+                        loan: formattedLoanDate,
+                        return: returnDate,
+                        returned: null
+                    },
+                    status: "Menunggu",
+                    fine: 0,
+                    createdAt: serverTimestamp()
+                };
+
+                // Simpan ke Firestore
+                await addDoc(collection(db, 'book_loans'), loanData);
+
+                // Pesan berhasil pinjam buku
+                await Swal.fire({
+                    title: 'Berhasil!',
+                    html: `
+                        <div style="text-align:center;">
+                            <i class="fas fa-check-circle" style="font-size:60px;color:#4CAF50;"></i>
+                            <p style="margin-top:20px;font-size:18px;">Peminjaman berhasil diajukan!Tunggu konfirmasi dari Admin Perpus..</p>
+                            <p style="font-size:16px;color:#777;">Anda akan diarahkan ke halaman riwayat...</p>
+                        </div>
+                    `,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    willClose: () => {
+                        // Redirect dengan efek smooth
+                        document.body.style.opacity = '0.7';
+                        document.body.style.transition = 'opacity 0.5s ease';
+                        setTimeout(() => {
+                            window.location.href = "peminjaman.html";
+                        }, 500);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error submitting loan:", error);
+                alert('Terjadi kesalahan saat mengajukan peminjaman: ' + error.message);
+            } finally {
+                // Reset tombol submit
+                submitButton.disabled = false;
+                submitText.textContent = 'Ajukan Peminjaman';
+                submitSpinner.style.display = 'none';
+            }
+        });
+
+        // Event listener untuk klik di luar modal
+        window.addEventListener('click', function (event) {
+            if (event.target === document.getElementById('loanModal')) {
+                closeModal();
+            }
+        });
+
+        // Muat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadBooks);
+
+
+        //logika mulai pinjam pindah ke bagian bawah
+        const pinjamBtn = document.getElementById('pinjam-btn');
+        const catalogSection = document.getElementById('catalog');
+
+        // Fungsi untuk smooth scroll ke catalog
+        pinjamBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            catalogSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+
+        // Active Link Highlighting
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links ul li a');
+
+        window.addEventListener('scroll', function () {
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

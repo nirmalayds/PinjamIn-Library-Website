@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Peminjaman - Perpustakaan</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script type="module" src="/profil-user.js"></script>
+    <script type="module" src="/peminjaman.js"></script>
+    <style>
+        /* Header */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 80%;
+            object-fit: cover;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Riwayat Peminjaman */
+        /* Style untuk filter buttons */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn.active {
+            background-color: #4a6fa5;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style untuk status */
+        .status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-waiting {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-completed {
+            background-color: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-rejected {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+
+        .status-canceled {
+            background-color: #E2E3E5;
+            color: #383D41;
+            text-decoration: line-through;
+        }
+
+        .loan-history {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 100px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .status-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-filter button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .status-filter button.active {
+            background: #2196F3;
+            color: white;
+            border-color: #2196F3;
+        }
+
+        /* Style untuk tombol batalkan */
+        .btn-cancel {
+            background-color: #fff0f0;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-cancel:hover {
+            background-color: #ffebee;
+            color: #b71c1c;
+            border-color: #ef9a9a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-cancel:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-cancel i {
+            font-size: 0.9em;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-cancel:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Animasi saat tombol diklik */
+        @keyframes cancelClick {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .btn-cancel:active {
+            animation: cancelClick 0.3s ease;
+        }
+
+        .loan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .loan-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+
+        /* Tablet View (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .navbar {
+                padding: 15px 3%;
+            }
+        }
+
+        /* Mobile View (480px - 767px) */
+        @media (max-width: 767px) {
+            .navbar {
+                flex-wrap: wrap;
+                padding: 12px 5%;
+            }
+
+            .loan-history {
+                margin-top: 9rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .navbar {
+                padding: 10px 3%;
+                width: 100%;
+            }
+
+            .loan-history {
+                padding: 15px;
+                width: 94%;
+                margin-top: 9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span>PinjamIn</span>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search-bar-input" placeholder="Cari buku atau penulis...">
+            <button><i id="search-button" class="fas fa-search"></i></button>
+        </div>
+
+        <div class="nav-links">
+            <ul>
+                <li><a href="profile-user.html" class="active">Home</a></li>
+                <li><a href="profile-user.html">Tentang</a></li>
+                <li><a href="profile-user.html">Katalog</a></li>
+                <li><a href="peminjaman.html">Peminjaman</a></li>
+                <li><a href="profile-user.html">Kontak</a></li>
+            </ul>
+        </div>
+
+        <div class="user-actions">
+            <div id="user-profile" class="user-profile">
+                <div class="profile-dropdown">
+                    <div id="user-avatar" alt=" " class="avatar"></div>
+                    <span class="user-name">Pengguna</span>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-calendar-check"></i> Peminjaman Saya</a>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        <a href="#"><i class="fas fa-cog"></i> Hapus akun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="hamburger" class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Main Content -->
+        <main>
+            <section class="loan-history">
+                <h2>Riwayat Peminjaman Saya</h2>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Semua</button>
+                    <button class="filter-btn" data-filter="Menunggu">Menunggu</button>
+                    <button class="filter-btn" data-filter="Disetujui">Disetujui</button>
+                    <button class="filter-btn" data-filter="Selesai">Selesai</button>
+                    <button class="filter-btn" data-filter="Ditolak">Ditolak</button>
+                    <button class="filter-btn" data-filter="Dibatalkan">Dibatalkan</button>
+                </div>
+
+                <div id="loans-container">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Memuat riwayat peminjaman...
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

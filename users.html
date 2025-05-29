@@ -1,0 +1,95 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Library Admin</title>
+  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script type="module" src="user.js"></script>
+  <script type="module" src="dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th, .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.user-table th {
+    background-color: #f2f2f2;
+}
+
+.user-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.loading, .no-data, .error {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading {
+    color: #666;
+}
+
+.no-data {
+    color: #999;
+}
+
+.error {
+    color: #d32f2f;
+    background-color: #ffebee;
+}
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="logo">Library Admin</div>
+      <div class="user-info">
+        <span id="user-name"></span>
+        <button id="logout">Logout</button>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="books.html">Books Management</a></li>
+          <li><a href="add-admin.html">Admins Management</a></li>
+          <li><a class="active" href="users.html">Users Management</a></li>
+          <li><a href="circulation.html">Circulation</a></li>
+          <li><a href="reports.html">Reports</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="main-content">
+      <h1>User Management</h1>
+
+      <div class="search-container">
+        <input type="text" id="user-search" placeholder="Search by name, username or email" aria-label="Search books">
+        <button id="search-btn" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="reset-btn" aria-label="Show all books">
+          <i class="fas fa-list"></i> Show All
+        </button>
+      </div>
+
+      <table id="users-table" class="user-table">
+        <!-- diisi dgn script -->
+      </table>
+    </div>
+  </div>
+</body>
+</html>

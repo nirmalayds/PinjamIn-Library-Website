@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar | Perpustakaan Digital</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .auth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-btn, .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .back-btn:hover, .close-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .auth-title {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--light-color);
+        }
+        
+        .auth-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .auth-box h2 {
+            margin-bottom: 30px;
+            color: var(--dark-color);
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .auth-form input {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .auth-form button {
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        
+        .auth-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .auth-options {
+            margin-top: 20px;
+        }
+        
+        .auth-options a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-light);
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .auth-divider::before {
+            margin-right: 10px;
+        }
+        
+        .auth-divider::after {
+            margin-left: 10px;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #ddd;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+        
+        .social-btn:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .fb-btn {
+            color: #3b5998;
+        }
+        
+        .google-btn {
+            color: #db4437;
+        }
+        
+        .name-fields {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .name-fields input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="auth-title">
+                    <div class="logo">
+                        <i class="fas fa-book-open"></i>
+                        <span>DigitalLib</span>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <h2>Buat Akun Baru</h2>
+            
+            <form id="auth-form" class="auth-form">
+                <div class="name-fields">
+                </div>
+                <input id="nd" type="text" placeholder="Nama Lengkap" required>
+                <input id="email" type="email" placeholder="Alamat Email" required>
+                <input id="username" type="username" placeholder="Username" required>
+                <input id="phone" type="phone" placeholder="No HP" required>
+                <input id="password" type="password" placeholder="Kata Sandi" required>
+                <input type="password" placeholder="Konfirmasi Kata Sandi" required>
+                <button id="submit" type="submit" >Daftar</button>
+            </form>
+            
+            
+            <div class="auth-options">
+                Sudah punya akun? <a href="/login-user.html">Masuk sekarang</a>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="register-user.js" defer></script>
+</body>
+</html>

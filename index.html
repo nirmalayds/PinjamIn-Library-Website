@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpustakaan Digital | Pinjam Bukumu Secara Online!</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script type="module" src="/login-user.js" defer></script>
+    <script type="module" src="/script.js"></script>
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span>PinjamIn</span>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search-bar-input" placeholder="Cari buku, atau penulis...">
+            <button id="search-button"><i class="fas fa-search"></i></button>
+        </div>
+
+
+        <div class="nav-links">
+            <ul>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">Tentang</a></li>
+                <li><a href="#catalog">Katalog</a></li>
+                <li><a href="#contact">Kontak</a></li>
+            </ul>
+        </div>
+
+        <div class="user-actions">
+            <div id="user-profile" class="user-profile" style="display: none;">
+                <div class="profile-dropdown">
+                    <img id="user-avatar" src="" alt="User Avatar" class="avatar">
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-user"></i> Profil Saya</a>
+                        <a href="#"><i class="fas fa-calendar-check"></i> Reservasi Saya</a>
+                        <a href="#"><i class="fas fa-cog"></i> Pengaturan</a>
+                        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+            <button id="login-btn" class="login-btn">Login</button>
+        </div>
+
+        <div id="hamburger" class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Jelajahi Dunia Tanpa Batas</h1>
+            <p>Temukan koleksi buku dari berbagai genre di perpustakaan kami. Pinjam buku online, nikmati bacaan fisik
+                tanpa antri!</p>
+            <button id="pinjam-btn" class="cta-btn">Lihat Katalog</button>
+        </div>
+        <div class="hero-image">
+            <img src="/books.jpg" alt="Buku Digital">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2>Tentang Kami</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Perpustakaan Digital kami didirikan pada tahun 2025 dengan misi menyediakan akses peminjaman yang
+                    mudah dan terjangkau untuk semua orang. Koleksi kami mencakup berbagai genre dari fiksi hingga
+                    akademik.</p>
+                <ul>
+                    <li><i class="fas fa-check"></i> 10+ koleksi buku</li>
+                    <li><i class="fas fa-check"></i> Akses 24/7</li>
+                    <li><i class="fas fa-check"></i> Platform ramah pengguna</li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <img src="/library2.jpg" alt="Tentang Perpustakaan">
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog" class="catalog">
+        <h2>Katalog Buku</h2>
+
+        <div class="book-grid">
+            <!-- Buku 1 -->
+            <div class="book-card">
+                <img src="/laut.jpg" alt="Laut Bercerita">
+                <h3>Laut Bercerita</h3>
+                <p>Leila S. Chudori</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Laut Bercerita')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buku 2 -->
+            <div class="book-card">
+                <img src="/bing.jpg" alt="Buku 2">
+                <h3>Mudahnya Belajar Bahasa Inggris</h3>
+                <p>Alfi Arifian</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Mudahnya Belajar Bahasa Inggris')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buku 3 -->
+            <div class="book-card">
+                <img src="/web.png" alt="Buku 3">
+                <h3>Langkah Mudah Belajar Pemrograman PHP Menggunakan Codeigniter 4 : Untuk Pemula</h3>
+                <p>Randi Adrika Putra</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Belajar Pemrograman PHP')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buku 4 -->
+            <div class="book-card">
+                <img src="/bodoh.jpg" alt="Buku 4">
+                <h3>Teruslah Bodoh Jangan Pintar</h3>
+                <p>Tere liye</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Teruslah Bodoh Jangan Pintar')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buku 5 -->
+            <div class="book-card">
+                <img src="/Filosofi-Teras.jpg" alt="Buku 5">
+                <h3>Filosofi Teras</h3>
+                <p>Henry Manampiring</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Filosofi Teras')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buku 6 -->
+            <div class="book-card">
+                <img src="/java.jpg" alt="Buku 6">
+                <h3>Pemrograman Java Komplet</h3>
+                <p>Jubilee Enterprise</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Pemrograman Java Komplet')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <img src="/hujan.jpg" alt="Buku 7">
+                <h3>Hujan</h3>
+                <p>Tere Liye</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('Hujan')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <img src="/IoT.png" alt="Buku 8">
+                <h3>Internet of Things Konsep, Teknologi, dan Aplikasi</h3>
+                <p>Agus Mulyana</p>
+                <div class="book-actions">
+                    <button class="read-btn">Pinjam</button>
+                    <button class="eye-btn" onclick="openModal('IOT')" title="Lihat Deskripsi">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Deskripsi -->
+    <div id="descModal" class="descModal">
+        <div class="modal-content-desc">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-desc"></p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-header">
+            <h2>Butuh Bantuan? Hubungi Kami</h2>
+            <p class="contact-subtitle">Tim perpustakaan digital kami siap membantu Anda!</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- WhatsApp -->
+            <div class="contact-method whatsapp">
+                <div class="contact-icon">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Chat Langsung</h3>
+                    <p>Respon cepat via WhatsApp 24/7</p>
+                    <a href="https://api.whatsapp.com/send?phone=6285860684374" class="contact-button">Mulai Chat</a>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="contact-method email">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Email Kami</h3>
+                    <p>Untuk pertanyaan lebih detail</p>
+                    <a href="mailto:info@digitallib.com" class="contact-email">info@digitallib.com</a>
+                </div>
+            </div>
+
+            <!-- Lokasi -->
+            <div class="contact-method location">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-details">
+                    <h3>Kunjungi Kami</h3>
+                    <p>Jam operasional: Senin-Jumat, 08:00-16:00</p>
+                    <address>Jl. Perpustakaan No. 123<br>Surabaya, Jawa Timur</address>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-book-open"></i>
+                <span>PinjamIn</span>
+            </div>
+
+            <div class="footer-links">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">Tentang</a></li>
+                    <li><a href="#catalog">Katalog</a></li>
+                    <li><a href="#contact">Kontak</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-social">
+                <h4>Ikuti Kami</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 | Project Kelompok 6. Semua hak dilindungi.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
