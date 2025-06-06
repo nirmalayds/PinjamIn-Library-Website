@@ -27,6 +27,7 @@ Fitur utama dalam sistem :
 - Frontend : HTML, CSS, JavaScript
 - Backend & Database : Firebase Authentication, Firestore Database & Realtime Database
 - IDE : Visual Studio Code
+- imgkit : Penyimpanan gambar secara online yang diintegrasikan dengan Firestore Database
 
 # 👥Tim Pengembangan - Kelompok 6 PTI D
 - Amel Putri Fatika Sari (23050974116)
